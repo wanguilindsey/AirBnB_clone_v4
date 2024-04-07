@@ -24,7 +24,7 @@ $.ajax({
   },
 
   error: function (xhr, status) {
-    console.log('error ' + status);
+    console.log('error ' + xhr);
   }
 });
 
