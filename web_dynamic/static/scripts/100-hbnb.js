@@ -1,20 +1,54 @@
 $(document).ready(function () {
-  let checkedAmenitiesIds = [];
+  let checkedAmenities = [];
+  let checkedStates = [];
+  let checkedCities = [];
 
-  $('input[type=checkbox]').click(function () {
+  $('.amenities .popover input[type=checkbox]').click(function () {
     const checkedAmenitiesNames = [];
-    checkedAmenitiesIds = [];
+    checkedAmenities = [];
 
-    $('input[type=checkbox]:checked').each(function () {
+    $('.amenities .popover input[type=checkbox]:checked').each(function () {
       checkedAmenitiesNames.push($(this).attr('data-name'));
-      checkedAmenitiesIds.push($(this).attr('data-id'));
+      checkedAmenities.push($(this).attr('data-id'));
     });
     if (checkedAmenitiesNames.length === 0) {
       $('.amenities h4').html('&nbsp;');
     } else {
       $('.amenities h4').text(checkedAmenitiesNames.join(', '));
     }
-    console.log(checkedAmenitiesIds);
+    console.log(checkedAmenities);
+  });
+
+  $('.locations .popover h2 input[type=checkbox]').click(function () {
+    const checkedAmenitiesNames = [];
+    checkedStates = [];
+
+    $('.locations .popover h2 input[type=checkbox]:checked').each(function () {
+      checkedAmenitiesNames.unshift($(this).attr('data-name'));
+      checkedStates.unshift($(this).attr('data-id'));
+    });
+    if (checkedAmenitiesNames.length === 0) {
+      $('.locations h6.checkedStates').html('&nbsp;');
+    } else {
+      $('.locations h6.checkedStates').text(checkedAmenitiesNames.join(', '));
+    }
+    console.log(checkedStates);
+  });
+
+  $('.locations .popover ul ul input[type=checkbox]').click(function () {
+    const checkedAmenitiesNames = [];
+    checkedCities = [];
+
+    $('.locations .popover ul ul input[type=checkbox]:checked').each(function () {
+      checkedAmenitiesNames.unshift($(this).attr('data-name'));
+      checkedCities.unshift($(this).attr('data-id'));
+    });
+    if (checkedAmenitiesNames.length === 0) {
+      $('.locations h6.checkedCities').html('&nbsp;');
+    } else {
+      $('.locations h6.checkedCities').text(checkedAmenitiesNames.join(', '));
+    }
+    console.log(checkedCities);
   });
 
   $('.filters button').click(function (event) {
@@ -23,7 +57,10 @@ $(document).ready(function () {
     $('.places').text('');
 
     const obj = {};
-    obj.amenities = checkedAmenitiesIds;
+    obj.amenities = checkedAmenities;
+    obj.states = checkedStates;
+    obj.cities = checkedCities;
+
     listPlaces(JSON.stringify(obj));
   });
 
@@ -43,14 +80,16 @@ $(document).ready(function () {
   listPlaces();
 });
 
-function listPlaces (amenities = '{}') {
+function listPlaces (consult = '{}') {
+  console.log(consult);
   $.ajax({
     type: 'POST',
     url: 'http://0.0.0.0:5001/api/v1/places_search',
     dataType: 'json',
-    data: amenities,
+    data: consult,
     contentType: 'application/json; charset=utf-8',
     success: function (places) {
+      console.log(places);
       for (let i = 0; i < places.length; i++) {
         $('.places').append(`
         <article>
@@ -77,6 +116,6 @@ function listPlaces (amenities = '{}') {
     },
     error: function (xhr, status) {
       console.log('error ' + status);
-    }  
-});
+    }
+  });
 }
